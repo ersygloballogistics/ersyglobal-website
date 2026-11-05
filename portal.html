@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MyEGL | ERSY GLOBAL Customer Portal</title><meta name="robots" content="noindex,nofollow">
+<style>
+:root{--ink:#101d34;--blue:#2563eb;--teal:#008f91;--muted:#63758d;--line:#dce4ed;--bg:#f0f4f8}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Arial,sans-serif}a{color:inherit}
+header{background:#0e182c;color:white;padding:17px 0}.wrap{max-width:1180px;margin:auto;width:min(94%,1180px)}.top{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.brand{font-size:21px;font-weight:850;text-decoration:none;letter-spacing:.3px}.brand span{color:#57d5d1}.sub{font-size:12px;color:#a4b4c9}nav{display:flex;align-items:center;gap:20px}nav a{font-size:14px;text-decoration:none}.button{border:0;border-radius:9px;padding:11px 16px;font-weight:700;cursor:pointer;background:var(--blue);color:white}.button:disabled{opacity:.5;cursor:not-allowed}.button.outline{background:white;border:1px solid var(--line);color:var(--ink)}.button.danger{background:#fff3f3;color:#a22b2b;border:1px solid #f0baba}
+main{padding:36px 0 65px}h1{font-size:clamp(26px,3vw,38px);margin:0 0 4px}h2{font-size:21px;margin:0 0 10px}h3{font-size:16px;margin:0}.muted{color:var(--muted)}.small{font-size:13px}.card{background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 2px 4px #0e182c07;padding:23px;margin:16px 0}.login{max-width:480px;margin:55px auto}.field{display:flex;flex-direction:column;gap:7px;margin:15px 0}label{font-weight:700;font-size:13px}input{padding:12px;border:1px solid #aebfd0;border-radius:8px;font:inherit;width:100%}.hidden{display:none!important}.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.metric{background:white;border:1px solid var(--line);padding:19px;border-radius:13px}.metric strong{display:block;font-size:27px;margin-top:5px}.job{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:start}.job-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.ref{color:var(--blue);font-weight:800}.pill{display:inline-block;background:#eaf2ff;color:#1d4c9d;padding:4px 9px;border-radius:20px;font-size:12px;font-weight:700}.details{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}.detail{border-top:1px solid var(--line);padding-top:10px;overflow-wrap:anywhere}.detail label{display:block;color:var(--muted);font-weight:500}.total{font-size:26px;font-weight:800}.services{display:flex;gap:8px;flex-wrap:wrap}.services span{background:#edf7f6;border-radius:6px;padding:6px 9px;font-size:13px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px}.notice{background:#fff8e5;border:1px solid #f0dca4;border-radius:9px;padding:12px 15px;margin:15px 0}.error{color:#a22b2b}.success{color:#06704b}.empty{padding:35px 12px;text-align:center;color:var(--muted)}footer{padding:20px;text-align:center;color:var(--muted);font-size:12px}@media(max-width:780px){.grid{grid-template-columns:repeat(2,1fr)}.details{grid-template-columns:1fr 1fr}.job{grid-template-columns:1fr}}@media(max-width:480px){.grid,.details{grid-template-columns:1fr}.card{padding:17px}}
+</style></head>
+<body>
+<header><div class="wrap top"><div><a class="brand" href="https://ersygloballogistics.github.io/egl-website/">ERSY <span>GLOBAL</span></a><div class="sub">MyEGL • Customer Portal</div></div><nav><a href="https://ersygloballogistics.github.io/egl-website/services.html">New Service Request</a><button id="logout" class="button outline hidden" type="button">Sign out</button></nav></div></header>
+<main class="wrap">
+<div id="not-configured" class="card login hidden"><h2>Portal setup in progress</h2><p class="muted">Secure customer sign-in will be available once ERSY GLOBAL completes the private data connection. Please submit service requests on our main website.</p><a href="https://ersygloballogistics.github.io/egl-website/services.html">Request a service</a></div>
+<section id="auth" class="card login hidden"><h1>Welcome to MyEGL</h1><p class="muted">Sign in with a one-time code sent to your email. ERSY GLOBAL must approve your account before your requests become visible.</p>
+<form id="email-form"><div class="field"><label for="email">Email address</label><input id="email" type="email" autocomplete="email" required placeholder="you@example.com"></div><button class="button" type="submit">Send sign-in code</button></form>
+<form id="code-form" class="hidden"><div class="field"><label for="code">Six-digit sign-in code</label><input id="code" inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" required placeholder="000000"></div><button class="button" type="submit">Sign in securely</button><button id="back" class="button outline" type="button">Change email</button></form>
+<p id="auth-msg" role="status" aria-live="polite" class="small"></p></section>
+<section id="pending" class="card login hidden"><h1>Account awaiting approval</h1><p>You've signed in successfully. ERSY GLOBAL must verify and approve your account before you can see private quotations and shipments.</p><p class="muted small">Your service requests can still be submitted through the public website.</p><a href="https://ersygloballogistics.github.io/egl-website/services.html">Submit a service request</a></section>
+<section id="dashboard" class="hidden"><div class="top"><div><h1>Control Tower Dashboard</h1><p class="muted">Your quotations, purchasing requests and shipment updates</p></div><button class="button outline" id="refresh" type="button">Refresh records</button></div>
+<div class="grid"><div class="metric"><span class="muted">My requests</span><strong id="count-requests">0</strong></div><div class="metric"><span class="muted">Quotes awaiting decision</span><strong id="count-pending">0</strong></div><div class="metric"><span class="muted">Approved quotations</span><strong id="count-approved">0</strong></div><div class="metric"><span class="muted">Shipments tracked</span><strong id="count-shipments">0</strong></div></div>
+<div class="card"><h2>My Requests & Quotations</h2><p class="muted small">Only records linked to your approved account are displayed. Amounts and inclusions are provided by ERSY GLOBAL.</p><div id="jobs" aria-live="polite"></div></div></section>
+</main><footer>© 2026 ERSY GLOBAL • MyEGL customer records are private. Payments are not yet available in this portal.</footer>
+<script src="./portal-config.js"></script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+const $=id=>document.getElementById(id), cfg=window.ERSY_PORTAL_CONFIG||{};
+const configured=Boolean(cfg.supabaseUrl&&cfg.supabaseAnonKey);
+const show=id=>{["not-configured","auth","pending","dashboard"].forEach(x=>$(x).classList.toggle("hidden",x!==id));$("logout").classList.toggle("hidden",id==="auth"||id==="not-configured")};
+if(!configured){show("not-configured");}
+else{
+const db=createClient(cfg.supabaseUrl,cfg.supabaseAnonKey);
+let email="",busy=false;
+const msg=(s,err=false)=>{$("auth-msg").textContent=s;$("auth-msg").className=err?"small error":"small success"};
+const escape=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const formatMoney=(v,c)=>v===null||v===undefined?"Not yet quoted":new Intl.NumberFormat("en-US",{style:"currency",currency:/^[A-Z]{3}$/.test(c||"")?c:"USD"}).format(v);
+async function refresh(){
+ const {data:{user},error:authError}=await db.auth.getUser();
+ if(authError||!user){show("auth");return}
+ const {data:profile,error:profileError}=await db.from("portal_customers").select("approved").eq("id",user.id).maybeSingle();
+ if(profileError){show("pending");return}
+ if(!profile?.approved){show("pending");return}
+ show("dashboard");
+ const {data:jobs,error}=await db.from("portal_jobs").select("id,reference,service_type,origin,destination,request_details,included_services,currency,quoted_total,quote_status,customer_decision,payment_status,shipment_status,tracking_number,updated_at").order("updated_at",{ascending:false});
+ if(error){$("jobs").textContent="Could not load records. Please try again.";return}
+ const rows=jobs||[];
+ $("count-requests").textContent=rows.length;
+ $("count-pending").textContent=rows.filter(j=>j.quote_status==="pending").length;
+ $("count-approved").textContent=rows.filter(j=>j.quote_status==="approved").length;
+ $("count-shipments").textContent=rows.filter(j=>Boolean(j.shipment_status)).length;
+ const root=$("jobs");root.replaceChildren();
+ if(!rows.length){root.innerHTML='<div class="empty">No linked requests yet. New quotations will appear here after ERSY GLOBAL reviews and links your records.</div>';return}
+ for(const j of rows){
+   const card=document.createElement("article");card.className="card";
+   const fields=Object.entries(j.request_details||{}).filter(([k,v])=>v!==null&&v!=="").slice(0,18).map(([k,v])=>'<div class="detail"><label>'+escape(k.replace(/_/g," "))+'</label>'+escape(typeof v==="object"?JSON.stringify(v):v)+'</div>').join("");
+   const services=Array.isArray(j.included_services)?j.included_services.map(x=>'<span>'+escape(x)+'</span>').join(""):"";
+   card.innerHTML='<div class="job"><div><div class="job-head"><span class="ref">'+escape(j.reference)+'</span><span class="pill">'+escape(j.quote_status.replaceAll("_"," "))+'</span></div><h3>'+escape(j.service_type)+'</h3><p class="muted small">'+escape(j.origin||"Origin not specified")+' → '+escape(j.destination||"Destination not specified")+'</p></div><div><div class="muted small">Quotation</div><div class="total">'+escape(formatMoney(j.quoted_total,j.currency))+'</div></div></div>'+
+   '<div class="details">'+fields+'</div>'+
+   (services?'<h3 style="margin-top:20px">Included services</h3><div class="services">'+services+'</div>':"")+
+   '<div class="details"><div class="detail"><label>Payment status</label>'+escape(j.payment_status)+'</div><div class="detail"><label>Shipment status</label>'+escape(j.shipment_status||"Not yet dispatched")+'</div><div class="detail"><label>Tracking reference</label>'+escape(j.tracking_number||"Not available")+'</div></div>';
+   if(j.quote_status==="pending"){
+     const actions=document.createElement("div");actions.className="actions";
+     for(const [label,decision,cls] of [["Approve quotation","approved","button"],["Decline quotation","declined","button danger"]]){
+       const button=document.createElement("button");button.type="button";button.className=cls;button.textContent=label;
+       button.addEventListener("click",async()=>{if(!confirm(label+" for "+j.reference+"?"))return;button.disabled=true;const {error}=await db.rpc("respond_to_quote",{p_job_id:j.id,p_decision:decision});if(error)alert("Could not save decision: "+error.message);await refresh()});
+       actions.appendChild(button)
+     }
+     const note=document.createElement("p");note.className="small muted";note.textContent="Approval records your decision. It does not process a payment. ERSY GLOBAL will provide secure payment instructions separately.";
+     card.append(actions,note)
+   }
+   root.appendChild(card)
+ }
+}
+$("email-form").addEventListener("submit",async e=>{e.preventDefault();if(busy)return;busy=true;email=$("email").value.trim().toLowerCase();const {error}=await db.auth.signInWithOtp({email,options:{shouldCreateUser:true}});busy=false;if(error){msg(error.message,true);return}$("email-form").classList.add("hidden");$("code-form").classList.remove("hidden");msg("Check your email for the sign-in code.")});
+$("code-form").addEventListener("submit",async e=>{e.preventDefault();const {error}=await db.auth.verifyOtp({email,token:$("code").value.trim(),type:"email"});if(error){msg(error.message,true);return}msg("");await refresh()});
+$("back").addEventListener("click",()=>{$("code-form").classList.add("hidden");$("email-form").classList.remove("hidden");msg("")});
+$("logout").addEventListener("click",async()=>{await db.auth.signOut();$("code-form").classList.add("hidden");$("email-form").classList.remove("hidden");show("auth")});
+$("refresh").addEventListener("click",refresh);
+db.auth.onAuthStateChange((_event,session)=>{if(!session){show("auth")}});
+refresh();
+}
+</script></body></html>
