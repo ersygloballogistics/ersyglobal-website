@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>myEGL Portal | Ersy Global Logistics</title>
+  <title>MyEGL Portal Preview | ERSY GLOBAL</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Lucide Icons -->
@@ -19,7 +19,7 @@
         <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('dashboard')">
           <div class="bg-blue-600 p-2 rounded-lg text-white font-black tracking-widest text-xl">EGL</div>
           <div>
-            <span class="font-bold text-lg tracking-tight block">ERSY GLOBAL LOGISTICS</span>
+            <span class="font-bold text-lg tracking-tight block">ERSY GLOBAL</span>
             <span class="text-xs text-blue-400 font-medium block -mt-1">myEGL Digital Portal</span>
           </div>
         </div>
@@ -35,17 +35,21 @@
 
         <!-- Right Side Actions -->
         <div class="flex items-center space-x-3">
-          <button onclick="openBookingModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm transition-colors flex items-center gap-2">
-            <i data-lucide="plus-circle" class="w-4 h-4"></i> New Request
+          <button onclick="window.location.href=\'https://ersygloballogistics.github.io/egl-website/services.html\'" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md text-sm transition-colors flex items-center gap-2">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i> Submit Request
           </button>
           <div class="border-l border-slate-700 h-6 mx-1"></div>
           <div class="flex items-center space-x-2 text-xs text-slate-300">
-            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">MVP Ready</span>
+            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">Demo Preview</span>
           </div>
         </div>
       </div>
     </div>
   </header>
+  <div role="status" class="bg-amber-50 border-b border-amber-200 text-amber-950 px-4 py-3 text-center text-sm">
+    <strong>MyEGL preview only.</strong> All figures, customer references and quotations shown here are examples. This portal is not connected to Zoho, cannot accept payments and does not yet support secure customer sign-in.
+    <a class="underline font-semibold ml-2" href="https://ersygloballogistics.github.io/egl-website/">Return to ERSY GLOBAL website</a>
+  </div>
 
   <!-- MAIN CONTENT CONTAINER -->
   <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -55,7 +59,7 @@
       <div class="flex justify-between items-center">
         <div>
           <h1 class="text-2xl font-bold text-slate-900">Control Tower Dashboard</h1>
-          <p class="text-slate-500 text-sm">Real-time status across all active EGL master references.</p>
+          <p class="text-slate-500 text-sm">Illustrative dashboard with sample records — live Zoho synchronization is not enabled.</p>
         </div>
         <div class="text-xs bg-white border border-slate-200 px-3 py-2 rounded-lg shadow-sm">
           Master ID Format: <code class="text-blue-600 font-bold">EGL-YYMM-####</code>
@@ -114,7 +118,7 @@
       <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
         <div class="p-5 border-b border-slate-200 flex justify-between items-center">
           <h3 class="font-bold text-slate-800">Active EGL Master Jobs</h3>
-          <span class="text-xs text-slate-500">Auto-synced with Back-Office CRM</span>
+          <span class="text-xs text-slate-500">Sample records — not synced to Zoho</span>
         </div>
         <div class="overflow-x-auto">
           <table class="w-full text-left text-sm text-slate-600">
@@ -303,7 +307,7 @@
   <!-- FOOTER -->
   <footer class="bg-slate-900 border-t border-slate-800 text-slate-400 py-6 text-xs text-center">
     <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
-      <p>&copy; 2026 Ersy Global Logistics. All Rights Reserved. Operating Blueprint & SOP v1.0[cite: 1].</p>
+      <p>&copy; 2026 Ersy Global Logistics. All Rights Reserved. MyEGL demonstration interface — not a live customer account.</p>
       <div class="flex space-x-4 font-mono text-slate-500">
         <span>SOP-A</span><span>•</span><span>SOP-B</span><span>•</span><span>SOP-C</span><span>•</span><span>SOP-D</span>
       </div>
@@ -381,7 +385,7 @@
           <td class="px-6 py-4 font-bold text-slate-900">${q.amount}</td>
           <td class="px-6 py-4"><span class="px-2.5 py-1 text-xs rounded-full ${q.gate.includes('Confirmed') ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${q.gate}</span></td>
           <td class="px-6 py-4">
-            ${q.status === 'Approved' ? '<span class="text-xs font-bold text-emerald-600">✓ Approved</span>' : `<button onclick="approveQuote('${q.id}')" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium hover:bg-blue-700">Approve & Pay</button>`}
+            ${q.status === 'Approved' ? '<span class="text-xs font-bold text-emerald-600">✓ Approved</span>' : `<button onclick="approveQuote('${q.id}')" class="bg-blue-600 text-white text-xs px-3 py-1.5 rounded-lg font-medium hover:bg-blue-700">Preview Approval</button>`}
           </td>
         </tr>
       `).join('');
@@ -427,56 +431,13 @@
     // New Request Submission
     function handleIntakeSubmit(e) {
       e.preventDefault();
-      const service = document.getElementById('serviceType').value;
-      const origin = document.getElementById('origin').value;
-      const destination = document.getElementById('destination').value;
-      const specs = document.getElementById('cargoSpecs').value;
-
-      // Auto-generate Master Ref convention EGL-YYMM-####
-      const date = new Date();
-      const yy = date.getFullYear().toString().slice(-2);
-      const mm = String(date.getMonth() + 1).padStart(2, '0');
-      const random = Math.floor(1000 + Math.random() * 9000);
-      const masterId = `EGL-${yy}${mm}-${random}`;
-
-      // Push new record
-      state.masters.unshift({
-        id: masterId,
-        service: service,
-        origin: origin,
-        destination: destination,
-        status: 'Intake Complete / Pending Quote',
-        quoteRef: `${masterId}-Q01`
-      });
-
-      state.quotes.unshift({
-        id: `${masterId}-Q01`,
-        masterId: masterId,
-        desc: specs,
-        amount: 'Calculating Margin...',
-        gate: 'Pending Commercial Quote',
-        status: 'Under Review'
-      });
-
-      renderTables();
-      closeBookingModal();
-      document.getElementById('intakeForm').reset();
-      alert(`Success! Generated EGL Master Reference ID: ${masterId}`);
+      alert('This is a demonstration portal. To submit a real service request, use the ERSY GLOBAL website.');
+      window.location.href = 'https://ersygloballogistics.github.io/egl-website/services.html';
     }
 
     // Quote Approval Action
     function approveQuote(quoteId) {
-      const q = state.quotes.find(item => item.id === quoteId);
-      if(q) {
-        q.status = 'Approved';
-        q.gate = 'Deposit Confirmed';
-        
-        const m = state.masters.find(item => item.id === q.masterId);
-        if(m) m.status = 'Payment Gate Cleared';
-        
-        renderTables();
-        alert(`Quote ${quoteId} approved! Back-office system will now release Purchase Order / Booking.`);
-      }
+      alert('Preview only: no quotation has been approved and no payment has been processed. Secure quote approval and payment will be enabled after the authenticated Zoho integration is complete.');
     }
 
     // Quick Search Tracking Function
