@@ -1,4 +1,4 @@
--- MyEGL portal backend. Run only in a NEW Supabase project after reviewing.
+-- MyEGL portal backend. ERSY GLOBAL customer data with explicit RLS.
 -- CRM remains the source of truth. Only the server-side Zoho sync may create/update jobs.
 create table if not exists public.portal_customers (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -7,21 +7,25 @@ create table if not exists public.portal_customers (
   created_at timestamptz not null default now()
 );
 -- New sign-ins are registered as PENDING, never auto-approved.
-create or replace function public.register_portal_customer()
+-- Keep the privileged trigger helper outside the exposed public API schema.
+create schema if not exists private;
+create or replace function private.register_portal_customer()
 returns trigger language plpgsql security definer
 set search_path = ''
-as $
+as $$
 begin
-  insert into public.portal_customers(id,email,approved)
-  values (new.id, lower(new.email), false)
-  on conflict (id) do nothing;
+  if new.email is not null then
+    insert into public.portal_customers(id,email,approved)
+    values (new.id, lower(trim(new.email)), false)
+    on conflict (id) do nothing;
+  end if;
   return new;
 end;
-$;
+$$;
 drop trigger if exists on_portal_auth_user_created on auth.users;
 create trigger on_portal_auth_user_created
   after insert on auth.users for each row
-  execute function public.register_portal_customer();
+  execute function private.register_portal_customer();
 
 create table if not exists public.portal_jobs (
   id uuid primary key default gen_random_uuid(),
@@ -53,8 +57,8 @@ create index if not exists portal_jobs_email_idx on public.portal_jobs(lower(cus
 
 alter table public.portal_customers enable row level security;
 alter table public.portal_jobs enable row level security;
-revoke all on public.portal_customers from anon, authenticated;
-revoke all on public.portal_jobs from anon, authenticated;
+revoke all on public.portal_customers from public, anon, authenticated;
+revoke all on public.portal_jobs from public, anon, authenticated;
 grant select on public.portal_customers to authenticated;
 grant select on public.portal_jobs to authenticated;
 
