@@ -6,6 +6,23 @@ create table if not exists public.portal_customers (
   approved boolean not null default false,
   created_at timestamptz not null default now()
 );
+-- New sign-ins are registered as PENDING, never auto-approved.
+create or replace function public.register_portal_customer()
+returns trigger language plpgsql security definer
+set search_path = ''
+as $
+begin
+  insert into public.portal_customers(id,email,approved)
+  values (new.id, lower(new.email), false)
+  on conflict (id) do nothing;
+  return new;
+end;
+$;
+drop trigger if exists on_portal_auth_user_created on auth.users;
+create trigger on_portal_auth_user_created
+  after insert on auth.users for each row
+  execute function public.register_portal_customer();
+
 create table if not exists public.portal_jobs (
   id uuid primary key default gen_random_uuid(),
   zoho_record_id text unique not null,
